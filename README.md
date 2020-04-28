@@ -25,7 +25,7 @@ Considering the constraints outlined above, we can aproach solving this problem 
 
 
 **Search and replace:** This is the most bruteforce approach that comes to mind when trying to solve this problem. Since both Python and Javascript have similar constucts, we can simply search through the sourcecode of one language and output the equivalent construct of the later. We loop through the source of the first language and generate the equivalent of construct based on the values we encounter when searching.  
-```python
+```Python
 //string containing sourcecode to be converted
 source_code = "function myfunc(){
                }"
@@ -41,9 +41,7 @@ output_code_list = []
 for construct in source_code_list:
     if construct == "def":
         output_code_list.append(construct)
-    elif construct == 
-
-
+    elif construct == me
 ```
 
 we could write some more custom logic in the conditionals here, but it aready begins to become clear that logic is convulated and its almost imposible to account for all the egde cases. 
