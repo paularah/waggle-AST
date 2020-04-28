@@ -25,14 +25,16 @@ Considering the constraints outlined above, we can aproach solving this problem 
 
 
 **Search and replace:** This is the most bruteforce approach that comes to mind when trying to solve this problem. Since both Python and Javascript have similar constucts, we can simply search through the sourcecode of one language and output the equivalent construct of the later. We loop through the source of the first language and generate the equivalent of construct based on the values we encounter when searching.  
-```Python
-//string containing sourcecode to be converted
+```python
+#string containing sourcecode to be converted
+
 source_code = "function myfunc(){
                }"
-//splitting the string into its individual constructs based on the space delimiter
+               
+#splitting the string into its individual constructs based on the space delimiter
 source_code_list = source_code.split(" ")
 
-//Now we have an array of every construct in the source code and can easily
+#Now we have an array of every construct in the source code and can easily
 
 output_code_list = []
 
