@@ -28,8 +28,7 @@ Considering the constraints outlined above, we can aproach solving this problem 
 ```python
 #string containing sourcecode to be converted
 
-source_code = "function myfunc(){
-               }"
+source_code = "function myfunc(){}"
                
 #splitting the string into its individual constructs based on the space delimiter
 source_code_list = source_code.split(" ")
@@ -37,7 +36,6 @@ source_code_list = source_code.split(" ")
 #Now we have an array of every construct in the source code and can easily
 
 output_code_list = []
-
 
 
 for construct in source_code_list:
