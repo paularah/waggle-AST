@@ -93,7 +93,8 @@ function foo(){
 ```
 Search and replace blindly transverses the sourcecode without context and is bound to error. No doubt some clever conditioning can be done here to handle this but it not only increases the complexity but introduces newer problems. 
 
-### Encoding: What if we could somehow come up with a standard way to encode the source code in a way the makes it easier to parse and convert considering the difficulties we have experienced so far with the source code in its raw form. Ideally, this format should be independent of any of the two languages making it easy to parse data back and forth. Taking a cue from JSON(JavaScript Object Notation), when an application resource is exposed via an API and data is transmitted via JSON, any other applications irrespective of the programming language being used can consume the API and utilize its resources. 
+### Encoding:
+What if we could somehow come up with a standard way to encode the source code in a way the makes it easier to parse and convert considering the difficulties we have experienced so far with the source code in its raw form. Ideally, this format should be independent of any of the two languages making it easy to parse data back and forth. Taking a cue from JSON(JavaScript Object Notation), when an application resource is exposed via an API and data is transmitted via JSON, any other applications irrespective of the programming language being used can consume the API and utilize its resources. 
 
 *At the core of this approach is a representation problem. How best do we best represent and model our data to enable us to transform it from one form to another while preserving the original information the data represents? What is the most accurate data structure that suits this task? Do existing data structures suits this task and satisfy the constraints? do we need to make modifications to enable existing data structures properly model our data ?*
 
