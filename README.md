@@ -9,7 +9,7 @@ As primarily a JavaScript and Python developer, I want to be able to easily conv
 
 ##                                           Problem Background
 
-According to Wikipedia, there are over 700 programming languages with Javascript and Python being the two most popular. Javascript versatility in the web and python's versatility across multiple domains have made them a popular choice of language for programmers. There exists some similarities between both languages. Both JavaScript and Python are interpreted, high-level languages, and support multiple modern paradigms of programming like object-oriented and functional programming. Since 1995 when Sun Microsystems first championed the "Write once, run anywhere" philosophy, many other programming languages have evolved to allow the same source code to be compiled different target machines. software kits like google's flutter allow the same source to be used for android, iOS, Windows, Mac, Linux, Google Fuchsia, and the web. This philosophy is the main driver behind the quest to solve this problem, a sort of "Write once, translate, and use anywhere. 
+According to Wikipedia, there are over 700 programming languages with Javascript and Python being the two most popular. Javascript versatility in the web and python's versatility across multiple domains have made them a popular choice of language for programmers. There exists some similarities between both languages. Both JavaScript and Python are interpreted, high-level languages, and support multiple modern paradigms of programming like object-oriented and functional programming. Since 1995 when Sun Microsystems first championed the "Write once, run anywhere" philosophy, many other programming languages have evolved to allow the same source code to be compiled different target machines. software kits like google's flutter allow the same source to be used for android, iOS, Windows, Mac, Linux, Google Fuchsia, and the web. This philosophy is the main driver behind the quest to solve this problem, a sort of "Write once, translate, and use anywhere". 
 
 
 ##                                   Solution Requirement
@@ -46,15 +46,16 @@ for construct in source_code_list:
     output_code_list.append(construct)
 ```
 
-We could write some more custom logic in the conditionals here, but it already begins to become clear that logic is convoluted, and its almost impossible to account for all the edge cases. Seeing that replace text matching is bound to fail here, we then turn to a more powerful way of matching text - regular expressions.   Regex is an excellent tool for working with complex strings. 
+We could write some more custom logic in the conditionals here, but it already begins to become clear that logic is convoluted, and its almost impossible to account for all the edge cases. Seeing that replace text matching is bound to fail here, we then turn to a more powerful way of matching text - regular expressions. Regex is an excellent tool for working with complex strings. 
 ```
 ```
-Regex already begins to fail here, in the process of converting, we have to make 
 
-Seeing how is it impossible for us to insert a wide range of custom conditionals depending on the scenario we encounter while parsing the source code, it becomes clear that regex is insufficient to accomplish this task and the complexities it involves and also handle it at scale. Looking at the approach so far, we can still make some optimizations to how we store and access data(what a construct translates to) rather than hardcoding it directly into our logic. 
 
-Considering that we might be working with a source code of arbitrary size, we need a way to store how the different constructs map to each other in the two programming languages to enable us to search faster. A data structure suitable for this task should allow us to easily search for the equivalent of a construct. The most ideal option in this scenario would be a hast table-based data structure. This can be a map, dictionary, or object. We can then map the equivalent construct in a way similar to this below.
+Trying to parse the sourcedoe with regular expressions was quite initimidating and a quick google search shows a well documented pattern of people failing to parse strings with complex and recursive structures(see the appendix for references to this). As the name implies, regular expressions are designed for parsing regular languages. A regular language is something that can be interpreted with a finite-state machine(Olsson, 2019). Programming languages and mark up languages are not regular languages and this cannot be parsed with regular expressions. Seeing how is it impossible for us to insert a wide range of custom conditionals depending on the scenario we encounter while parsing the source code, it becomes clear that regex is insufficiently sophisticated to accomplish this task and also handle it at scale.   
 
+
+Looking back at the approach so far, we can still make some optimizations to how we store and access data(what a construct translates to) rather than hardcoding it directly into our logic making it easier to work with. Considering that we might be working with a source code of arbitrary size, we need a way to store how the different constructs map to each other in the two programming languages to enable us to search faster. A data structure suitable for this task should allow us to easily search for the equivalent of a construct. The most ideal option in this scenario would be a hash table-based data structure. This can be a map, dictionary, or object. We can then map the equivalent construct in a way similar to this below.
+ 
 ```javascript
 {
   'def': 'function'
@@ -67,32 +68,13 @@ Considering that we might be working with a source code of arbitrary size, we ne
 }
 ```
 When parsing the source code of the first language, in this case, Python. While searching, we simply check our map to see what a text translates as to. This is easily achieved in O(n) time, since searching for the equivalent of a construct takes O(1) time.  
-N/B: Some assumptions were made here like mapping the equality operator in python to strict equality in javascript, braces to tabs indentation, etc. 
+**N/B:** Some assumptions were made here like mapping the equality operator in python to strict equality in javascript, braces to tabs indentation, etc. 
+While this has made it easy for to able to quickly access and translate from the sourcecode, it fails to address the main problem. 
+
+**Additional Insight from Approach:** Through this problem-solving process, another constraint that wasn't originally taken into consideration becomes obvious. The same piece of code might represent something else depending on the surrounding context. How then do we handle an expression, block of code in relation to its context? Search and replace so far has not been a good approach to solving this. 
 
 #### Limitations of search and replace: 
-Through this problem-solving process, another constraint that wasn't originally taken into consideration becomes obvious. The same piece of code might represent something else depending on the surrounding context. How then do we handle an expression, block of code in relation to its context? Search and replace so far has not been a good approach to solving this. 
-
-
-
-
-*At the core of this approach is a representation problem. How best do we best represent and model our data to be enable us to transform it from one form to another while preserving the original information the data represents? What is the most accurate data structure that suits this task? Do existing data structures suits this task and satisfy the constraints? do we need to make modifications to enable existing data structures properly model our data ?*
-
-
-
-
-
-
-
-
-
-Take an expression like this below
-```javascript
-const x = 3 + 1 * 7;
-```
-A common way to represent this  
-
-
-Handling scope
+**Handling scope**
 Say a we have two nested functions like this
 
 ```javascript
@@ -104,10 +86,36 @@ function foo(){
   }
 }
 ```
-Parsng this into valid syntax in another language would be extremely difficult. Both javasc
+Search and replace blindly transveres the sourcode without context and is bound to error. No doubt some clever conditioning can be done here to handle this but it not only increases the complexity but introduces newer problems. 
 
-How we handle accuracy? we can now use a set of predefined syntactic rules on how the AST should be processed and us decide what to do when we encounter certain kinds of node on numerous circumstances. Take for example below
+**Encoding**: What if we could somehow come up with a standard way to encode the sourcecode in a way the makes it more easier to parse and convert considering the difficulties we have experienced so far with the sourcecode in its raw form. Ideally this format should be independent of any of the two languages making it easy to parse data back and forth. Taking a cue from JSON(JavaScript Object Notation), when a application resource is exposed via an API and data is transmited via JSON, any another application irrespective of the programming language being used can consume the API and utilize it resources. 
+
+*At the core of this approach is a representation problem. How best do we best represent and model our data to be enable us to transform it from one form to another while preserving the original information the data represents? What is the most accurate data structure that suits this task? Do existing data structures suits this task and satisfy the constraints? do we need to make modifications to enable existing data structures properly model our data ?*
+
+Take an expression like this below
+```javascript
+3 + 1 * y;
+```
+While this looks like a simple expression, a number factors have to be take into consideration to effectively parse this expression. Operator precedence rule is followed in almost any modern programming languge today when evaluating expressions, thus the multiplication side of this expression is first evaluated then followed by the addition part. 
+A common way way to represent expressions like this is using a tree. The expression above can easily be represented as tree this way. 
+```javascript
+3 + 1 * y
+\   \   /
+ \   \ /
+  \   *(Multiplication)
+   \ /
+    +(Addition)
+```
+This effectively captures the context needed to accurately parse and evaluate this expression.
+
+
+### Final Solution: Abtract Syntax Trees ###
+Wikipedia defines abstract syntax trees (AST), or just syntax tree, as a tree representation of the abstract syntactic structure of source code written in a programming language. Each node of the tree denotes a construct occurring in the source code. These useful data structures represent the abstract structure of source code regardless of the language. This is possible because despite the syntactic differences, all languages have a very large overlap in terms of the code structure they express: variable assignment, conditions, logic branching etc.
+
+taking the consstraint of near accurate conversion we How we handle accuracy? we can now use a set of predefined syntactic rules on how the AST should be processed and us decide what to do when we encounter certain kinds of node on numerous circumstances. Take for example below
 ```python
 4 + "30"
 ```
-In python, this would throw a TypeError while in JavaScript, both values in the expression would be treated as strings and concatenated together because of implicit type coercion. Some of the somewhat quirky behaviors in JavaScript like this can be eliminated by running the source in "strict mode" or using TypeScript(a typed superscript of javascript). Parsing source code this way allows us to make decisions on how we want the AST to be transformed, especially syntactic and context decisions which we have seen can easily mar the conversion process. 
+In Python, this would throw a TypeError while in JavaScript, both values in the expression would be treated as strings and concatenated together because of implicit type coercion. Some of the somewhat quirky behaviors in JavaScript like this can be eliminated by running the source in "strict mode" or using TypeScript(a typed superscript of javascript). Parsing source code this way allows us to make decisions on how we want the AST to be transformed, especially syntactic and context decisions which we have seen can easily mar the conversion process. 
+
+AST handles scoping and context limitations of search and replace by Storing meta-data while parsing the sourcecode allow context specific decisions. 
