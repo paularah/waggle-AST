@@ -81,6 +81,7 @@ When parsing the source code of the first language, in this case, Python. While 
 </ul>
 Say a we have two nested functions like this
 </p>
+
 ```javascript
 function foo(){
   //outer scope
