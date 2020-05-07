@@ -16,8 +16,8 @@ According to Wikipedia, there are over 700 programming languages with Javascript
 At the barest minimum, the solution to this problem should satisfy the following constraints:
 * Near accurate conversion from Python to JavaScript.
 * Handle syntactic edge cases like regular function declaration and arrow functions in JavaScript, regular functions and function expressions(lambda functions) in Python, etc
-* Parsing should be achieved in the worst-case scenario of ** O(nlogn) ** time. This is particularly important because we are dealing with an input(sourcecode string) of arbitrary size which might vary depending on the amount of source code we are parsing. 
-* Parsing should be done in ** O(n2) ** space complexity. The rationale behind this is that since source code is fundamentally a text file, the input size is expected to be small, and in the case of large input size, space can be easily compensated for in comparison to time. 
+* Parsing should be achieved in the worst-case scenario of *O(nlogn)* time. This is particularly important because we are dealing with an input(sourcecode string) of arbitrary size which might vary depending on the amount of source code we are parsing. 
+* Parsing should be done in *O(n2)* space complexity. The rationale behind this is that since source code is fundamentally a text file, the input size is expected to be small, and in the case of large input size, space can be easily compensated for in comparison to time. 
 
 
 ##                                                   Solution Approach                      
