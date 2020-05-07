@@ -220,3 +220,8 @@ The equivalent AST for the same code in JavaScript using Esprima standards would
    In Python, this would throw a TypeError while in JavaScript, both values in the expression would be treated as strings      and concatenated together because of implicit type coercion. Some of the somewhat quirky behaviors in JavaScript like        this can be eliminated by running the source in "strict mode" or using TypeScript(a typed superscript of javascript).        Parsing source code this way allows us to make decisions on how we want the AST to be transformed, especially                syntactic and context decisions which we have seen can easily mar the conversion process. 
 
 * AST handles scoping and context limitations of search and replaces by storing meta-data while parsing the sourcecode allows context-specific decisions. This meta data can include the location of a contruct within the sourcecode, etc. 
+
+### Taking Abstract Syntax Trees One Step Further
+Having figured out to accurately represent and convert sourcecode.There are many routes to achieve the goal this project  the most obvious/direct being to make the AST, make transform rules and convert the python tree to a JavaScript tree and vice versa. This is the approach used in the code for this project. However, the overall philisophy behind this project to promote convergence around program languages. 
+
+A modular approach to designing parser based on a plugin system. Programmers can simply 
