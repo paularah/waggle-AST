@@ -69,9 +69,9 @@ Looking back at the approach so far, we can still make some optimizations to how
   
 }
 ```
-When parsing the source code of the first language, in this case, Python. While searching, we simply check our map to see what a text translates as to. This is easily achieved in O(n) time, since searching for the equivalent of a construct takes O(1) time.  
+When parsing the source code of the first language, in this case, Python. While searching, we simply check our map to see what a text translates as to. This is easily achieved in O(n) time, since searching for the equivalent of a construct takes O(1) time. While this has made it easy for to able to quickly access and translate from the sourcecode, it fails to address the main problem.  
 **N/B:** Some assumptions were made here like mapping the equality operator in python to strict equality in javascript, braces to tabs indentation, etc. 
-While this has made it easy for to able to quickly access and translate from the sourcecode, it fails to address the main problem. 
+
 
 **Additional Insight from Approach:** Through this problem-solving process, another constraint that wasn't originally taken into consideration becomes obvious. The same piece of code might represent something else depending on the surrounding context. How then do we handle an expression, block of code in relation to its context? Search and replace so far has not been a good approach to solving this. 
 
@@ -88,18 +88,18 @@ function foo(){
   }
 }
 ```
-Search and replace blindly transveres the sourcode without context and is bound to error. No doubt some clever conditioning can be done here to handle this but it not only increases the complexity but introduces newer problems. 
+Search and replace blindly transverses the sourcecode without context and is bound to error. No doubt some clever conditioning can be done here to handle this but it not only increases the complexity but introduces newer problems. 
 
-**Encoding**: What if we could somehow come up with a standard way to encode the sourcecode in a way the makes it more easier to parse and convert considering the difficulties we have experienced so far with the sourcecode in its raw form. Ideally this format should be independent of any of the two languages making it easy to parse data back and forth. Taking a cue from JSON(JavaScript Object Notation), when a application resource is exposed via an API and data is transmited via JSON, any another application irrespective of the programming language being used can consume the API and utilize it resources. 
+**Encoding**: What if we could somehow come up with a standard way to encode the source code in a way the makes it easier to parse and convert considering the difficulties we have experienced so far with the source code in its raw form. Ideally, this format should be independent of any of the two languages making it easy to parse data back and forth. Taking a cue from JSON(JavaScript Object Notation), when an application resource is exposed via an API and data is transmitted via JSON, any other applications irrespective of the programming language being used can consume the API and utilize its resources. 
 
-*At the core of this approach is a representation problem. How best do we best represent and model our data to be enable us to transform it from one form to another while preserving the original information the data represents? What is the most accurate data structure that suits this task? Do existing data structures suits this task and satisfy the constraints? do we need to make modifications to enable existing data structures properly model our data ?*
+*At the core of this approach is a representation problem. How best do we best represent and model our data to enable us to transform it from one form to another while preserving the original information the data represents? What is the most accurate data structure that suits this task? Do existing data structures suits this task and satisfy the constraints? do we need to make modifications to enable existing data structures properly model our data ?*
 
 Take an expression like this below
 ```javascript
 3 + 1 * y;
 ```
-While this looks like a simple expression, a number factors have to be take into consideration to effectively parse this expression. Operator precedence rule is followed in almost any modern programming languge today when evaluating expressions, thus the multiplication side of this expression is first evaluated then followed by the addition part. 
-A common way way to represent expressions like this is using a tree. The expression above can easily be represented as tree this way. 
+While this looks like a simple expression, a number of factors have to be taken into consideration to effectively parse this expression. Operator precedence rule is followed in almost any modern programming language today when evaluating expressions, thus the multiplication side of this expression is first evaluated then followed by the addition part. 
+A common way to represent expressions like this is by using a tree. The expression above can easily be represented as a tree this way. 
 ```javascript
 3 + 1 * y
 \   \   /
@@ -108,16 +108,50 @@ A common way way to represent expressions like this is using a tree. The express
    \ /
     +(Addition)
 ```
-This effectively captures the context needed to accurately parse and evaluate this expression.
+This effectively captures the context needed to accurately parse and evaluate this expression. THe source code ofr a prgram is a recursive structure and trees are one of the best data structures for representing recursive objects. Scaling this up we can effectively represent an entire source code as some sort of implicit tree structure. Take the code example below.
+```javascript
+function myfunc(){
+    var y = 4
+    var z = 3 + 1 + y
+}
+```
+The parent node here would be a module. Both JavaScript and Python treats each file as a module, thats why its possible to simply import a file as a dependency in Python using import statments and in JavaScript using import, require, etc depending on the module sytem being used(e.g Common JS, ESM, etc). The function declaration is a child node of the module node, the first variable declaration is a child node of the function, the second variable decalaration is a child nod of the function and the expression in Z is a child of the Z variable declaration. Represnting this grapically would look something like this.
+```javascript
+Programe
+    |
+  body
+    \
+     \
+    function declaration(myfunc) 
+           \
+            \
+          function body
+                 /\
+               /    \
+              /      \
+             /        \
+            /          \
+           /            \
+Variable Declaration    Variable declaration
+(name:x, val: int 4)    (name:z) (val: Expression)
+                                  3 + 1 * y
+                                  \   \   /
+                                  \   \ /
+                                  \   *(Multiplication)
+                                   \ /
+                                    +(Addition)
+
+```
 
 
 ### Final Solution: Abtract Syntax Trees ###
-Wikipedia defines abstract syntax trees (AST), or just syntax tree, as a tree representation of the abstract syntactic structure of source code written in a programming language. Each node of the tree denotes a construct occurring in the source code. These useful data structures represent the abstract structure of source code regardless of the language. This is possible because despite the syntactic differences, all languages have a very large overlap in terms of the code structure they express: variable assignment, conditions, logic branching etc.
+Wikipedia defines abstract syntax trees (AST), or just syntax tree, as a tree representation of the abstract syntactic structure of source code written in a programming language. Each node of the tree denotes a construct occurring in the source code. These useful data structures represent the abstract structure of source code regardless of the language. This is possible because, despite the syntactic differences, all languages have a very large overlap in terms of the code structure they express: variable assignment, conditions, logic branching, etc.
 
-taking the consstraint of near accurate conversion we How we handle accuracy? we can now use a set of predefined syntactic rules on how the AST should be processed and us decide what to do when we encounter certain kinds of node on numerous circumstances. Take for example below
+###Why ASTs?
+taking the constraint of near accurate conversion we How we handle accuracy? we can now use a set of predefined syntactic rules on how the AST should be processed and we decide what to do when we encounter certain kinds of node on numerous circumstances. Take for example below
 ```python
 4 + "30"
 ```
 In Python, this would throw a TypeError while in JavaScript, both values in the expression would be treated as strings and concatenated together because of implicit type coercion. Some of the somewhat quirky behaviors in JavaScript like this can be eliminated by running the source in "strict mode" or using TypeScript(a typed superscript of javascript). Parsing source code this way allows us to make decisions on how we want the AST to be transformed, especially syntactic and context decisions which we have seen can easily mar the conversion process. 
 
-AST handles scoping and context limitations of search and replace by Storing meta-data while parsing the sourcecode allow context specific decisions. 
+AST handles scoping and context limitations of search and replaces by Storing meta-data while parsing the sourcecode allows context-specific decisions. 
