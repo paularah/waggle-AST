@@ -23,7 +23,7 @@ At the barest minimum, the solution to this problem should satisfy the following
 ##                                                   Solution Approach                      
 Considering the constraints outlined above, we can approach solving this problem in the following ways:
 <p align="center">
- ### Search and replace: ### 
+<h3><sstrong>Search and replace</strong></h3>
 </p>
 
 This is the most brute-force approach that comes to mind when trying to solve this problem. Since both Python and Javascript have similar constructs, we can simply search through the source code of one language and output the equivalent construct of the later. We loop through the source of the first language and generate the equivalent of construct based on the values we encounter when searching. We first store what a construct translates to in the other language. For example, a function declared with the "def" keyword in Python is the same as a function declared with the "function" keyword in JavaScript. When searching through the Python source code, if we encounter the string "def", we output the string "function" in the new source code we are generating for JavaScript.  
