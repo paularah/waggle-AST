@@ -211,7 +211,7 @@ The equivalent AST for the same code in JavaScript using Esprima standards would
 
 * Taking the constraint of near accurate conversion we How we handle accuracy? we can now use a set of predefined syntactic rules on how the AST should be processed and we decide what to do when we encounter certain kinds of node on numerous circumstances. Using the semi colon delimeter is optional in Javascript and the usage of this is entirely based on preference. AST allows us the sophiscation of defining how we approach the source code. Babel a JavaScript tool for transpiling and polyfilling sourcecode takes advantage of this. linters also take advantage of this allowing programmers to dictate sourcecode styling and conventions. 
 
-Take for example below
+    Take for example below
 ```python
 4 + "30"
 ```
