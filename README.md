@@ -214,6 +214,6 @@ Take for example below
 ```python
 4 + "30"
 ```
-In Python, this would throw a TypeError while in JavaScript, both values in the expression would be treated as strings and concatenated together because of implicit type coercion. Some of the somewhat quirky behaviors in JavaScript like this can be eliminated by running the source in "strict mode" or using TypeScript(a typed superscript of javascript). Parsing source code this way allows us to make decisions on how we want the AST to be transformed, especially syntactic and context decisions which we have seen can easily mar the conversion process. 
+  In Python, this would throw a TypeError while in JavaScript, both values in the expression would be treated as strings and   concatenated together because of implicit type coercion. Some of the somewhat quirky behaviors in JavaScript like this can   be eliminated by running the source in "strict mode" or using TypeScript(a typed superscript of javascript). Parsing         source code this way allows us to make decisions on how we want the AST to be transformed, especially syntactic and         context decisions which we have seen can easily mar the conversion process. 
 
 * AST handles scoping and context limitations of search and replaces by storing meta-data while parsing the sourcecode allows context-specific decisions. This meta data can include the location of a contruct within the sourcecode, etc. 
