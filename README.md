@@ -50,8 +50,8 @@ for construct in source_code_list:
 
 We could write some more custom logic in the conditionals here, but it already begins to become clear that logic is convoluted, and its almost impossible to account for all the edge cases. Seeing that replace text matching is bound to fail here, we then turn to a more powerful way of matching text - regular expressions. Regex is an excellent tool for working with complex strings. 
 ```
+<tag[^>]*>(.*?)</tag>
 ```
-
 
 Trying to parse the sourcedoe with regular expressions was quite initimidating and a quick google search shows a well documented pattern of people failing to parse strings with complex and recursive structures(see the appendix for references to this). As the name implies, regular expressions are designed for parsing regular languages. A regular language is something that can be interpreted with a finite-state machine(Olsson, 2019). Programming languages and mark up languages are not regular languages and this cannot be parsed with regular expressions. Seeing how is it impossible for us to insert a wide range of custom conditionals depending on the scenario we encounter while parsing the source code, it becomes clear that regex is insufficiently sophisticated to accomplish this task and also handle it at scale.   
 
@@ -115,7 +115,7 @@ function myfunc(){
     var z = 3 + 1 + y
 }
 ```
-The parent node here would be a module. Both JavaScript and Python treats each file as a module, thats why its possible to simply import a file as a dependency in Python using import statments and in JavaScript using import, require, etc depending on the module sytem being used(e.g Common JS, ESM, etc). The function declaration is a child node of the module node, the first variable declaration is a child node of the function, the second variable decalaration is a child nod of the function and the expression in Z is a child of the Z variable declaration. Represnting this grapically would look something like this.
+The parent node here would be a module. Both JavaScript and Python treats each file as a module, thats why its possible to simply import a file as a dependency in Python using import statments and in JavaScript using import, require, etc depending on the module sytem being used(e.g Common JS, ESM, etc). The function declaration is a child node of the module node, the first variable declaration is a child node of the function, the second variable decalaration is a child nod of the function and the expression in Z is a child of the Z variable declaration. Representing this grapically would look something like this.
 ```javascript
 Programe
     |
@@ -132,7 +132,7 @@ Programe
              /        \
             /          \
            /            \
-Variable Declaration    Variable declaration
+Variable Declaration    Variable Declaration
 (name:x, val: int 4)    (name:z) (val: Expression)
                                   3 + 1 * y
                                   \   \   /
@@ -143,12 +143,35 @@ Variable Declaration    Variable declaration
 
 ```
 
-
 ### Final Solution: Abtract Syntax Trees ###
-Wikipedia defines abstract syntax trees (AST), or just syntax tree, as a tree representation of the abstract syntactic structure of source code written in a programming language. Each node of the tree denotes a construct occurring in the source code. These useful data structures represent the abstract structure of source code regardless of the language. This is possible because, despite the syntactic differences, all languages have a very large overlap in terms of the code structure they express: variable assignment, conditions, logic branching, etc.
+Wikipedia defines abstract syntax trees (AST) as a tree representation of the abstract syntactic structure of source code written in a programming language. Each node of the tree denotes a construct occurring in the source code. Abstract Syntax trees are useful data structures for representing the abstract structure of source code irrespective of the language. All modern programming languages have a large similarities in terms of the code structure they express e.g variable declaration/assignment, conditionals, loops, logic branching, etc. Abstact syntax trees is a standadized way for appraoching how we represent sourcecode as a tree data structure. To generate the sourcecode -- original or converted, we simply apply the right kind of traversal on the abstract syntax tree visiting each node and analysing it. There are multiple conventions for ASTs in JavaScript(e.g esprima. estree,ascorn,etc) an accompanying parsers to process the AST. Python has an inbuilt module for woring with AST and JavaScript has a several libraries for parsing ASTs. A simple AST in Python would look like this.
+```python
+import ast 
+sourcecode = "3 + 1 * y"
+tree = ast.parse(sourcecode)
+print(ast.dump(tree))
+```
+The result tree would look like this
+```python
+Module(body=[Expr(value=BinOp(left=Num(n=3), op=Add(), right=BinOp(left=Num(n=1), op=Mult(), right=Name(id='y', ctx=Load()))))])
+```
+We can format this to make it easier to intepret.
+```python
+Module(
+        body=[
+              Expr(value=BinOp(
+              left=Num(n=3), 
+              op=Add(), 
+              right=BinOp(
+                            left=Num(n=1), 
+                            op=Mult(), 
+                            right=Name(id='y',ctx=Load()))))]
+)
 
-###Why ASTs?
-taking the constraint of near accurate conversion we How we handle accuracy? we can now use a set of predefined syntactic rules on how the AST should be processed and we decide what to do when we encounter certain kinds of node on numerous circumstances. Take for example below
+```
+### Why ASTs? ###
+
+* taking the constraint of near accurate conversion we How we handle accuracy? we can now use a set of predefined syntactic rules on how the AST should be processed and we decide what to do when we encounter certain kinds of node on numerous circumstances. Take for example below
 ```python
 4 + "30"
 ```
