@@ -22,9 +22,8 @@ At the barest minimum, the solution to this problem should satisfy the following
 
 ##                                                   Solution Approach                      
 Considering the constraints outlined above, we can approach solving this problem in the following ways:
-<h4 align="center">
-    <p>Search and replace</p>
-</h4>
+
+###Search and replace
 
 This is the most brute-force approach that comes to mind when trying to solve this problem. Since both Python and Javascript have similar constructs, we can simply search through the source code of one language and output the equivalent construct of the later. We loop through the source of the first language and generate the equivalent of construct based on the values we encounter when searching. We first store what a construct translates to in the other language. For example, a function declared with the "def" keyword in Python is the same as a function declared with the "function" keyword in JavaScript. When searching through the Python source code, if we encounter the string "def", we output the string "function" in the new source code we are generating for JavaScript.  
 ```python
@@ -75,8 +74,10 @@ When parsing the source code of the first language, in this case, Python. While 
 
 **Additional Insight from Approach:** Through this problem-solving process, another constraint that wasn't originally taken into consideration becomes obvious. The same piece of code might represent something else depending on the surrounding context. How then do we handle an expression, block of code in relation to its context? Search and replace so far has not been a good approach to solving this. 
 
-#### Limitations of search and replace: 
-**Handling scope**
+#### Limitations of search and replace:
+<ul>
+  <li><strong>Handling Scope</strong></li>
+</ul>
 Say a we have two nested functions like this
 
 ```javascript
