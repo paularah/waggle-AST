@@ -1,5 +1,5 @@
 # Data Structures and Algorithms Final Project:
-**A proof of concept -  Converting Python Sourcecode to Valid JavaScript and Vice Versa
+**A proof of concept -  Converting Python Sourcecode to Valid JavaScript and Vice Versa**
 
 ##                                               Abstract
 As primarily a JavaScript and Python developer, I want to be able to easily convert snippets of code written in Python to JavaScript and vice versa. This will enable programmers to avoid rewriting boilerplate logic that has been implemented in Python or JavaScript when they are switching languages and also to make it easy to migrate codebases from Python to JavaScript and vice versa almost enirely automating the process. 
