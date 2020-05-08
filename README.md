@@ -220,6 +220,15 @@ The equivalent AST for the same code in JavaScript using Esprima standards would
 
 * AST handles scoping and context limitations of search and replaces by storing meta-data while parsing the sourcecode allows context-specific decisions. This meta data can include the location of a contruct within the sourcecode, etc. 
 
+### Time and Space Complexity of Operations
+
+Operation | Time Complexity | Space Complexity 
+------------ | ------------- | -------------
+Convert AST(this is essentially a breadth-first travesal) | O(n) | O(n)
+Content in the first column | Content in the second column | wweeee
+
+Cyclomatic complexity 
+
 ### Taking Abstract Syntax Trees One Step Further
 Having figured out to accurately represent and convert sourcecode.There are many routes to achieve the goal this project  the most obvious/direct being to make the AST, make transform rules and convert the python tree to a JavaScript tree and vice versa. This is the approach used in the code for this project. However, since the overall philisophy behind this project to promote convergence around program languages. This solution can be taken one step further.
 **Universal ASTs:** Currently ASTs are very language specific, as seen in the snippet above, AST for the same piece of code varies across both languages and in the case of JavaScript, the AST varies depending the parser engine used. 
