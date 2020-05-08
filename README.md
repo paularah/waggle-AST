@@ -1,4 +1,5 @@
-# **DSA Final Project:** 
+# Data Structures and Algorithms Final Project:
+**A proof of concept -  Converting Python Sourcecode to Valid JavaScript and Vice Versa
 
 ##                                               Abstract
 As primarily a JavaScript and Python developer, I want to be able to easily convert snippets of code written in Python to JavaScript and vice versa. This will enable programmers to avoid rewriting boilerplate logic that has been implemented in Python or JavaScript when they are switching languages and also to make it easy to migrate codebases from Python to JavaScript and vice versa almost enirely automating the process. 
@@ -50,6 +51,7 @@ for construct in source_code_list:
 We could write some more custom logic in the conditionals here, but it already begins to become clear that logic is convoluted, and its almost impossible to account for all the edge cases. Seeing that search text matching is bound to fail here, we then turn to a more powerful way of matching text - regular expressions. Regex is an excellent tool for working with complex strings. 
 ```
 <tag[^>]*>(.*?)</tag>
+//remember to include regex example
 ```
 
 Trying to parse the sourcedoe with regular expressions was quite initimidating and a quick google search shows a well documented pattern of people failing to parse strings with complex and recursive structures(see the appendix for references to this). As the name implies, regular expressions are designed for parsing regular languages. A regular language is something that can be interpreted with a finite-state machine(Olsson, 2019). Programming languages and mark up languages are not regular languages and this cannot be parsed with regular expressions. Seeing how is it impossible for us to insert a wide range of custom conditionals depending on the scenario we encounter while parsing the source code, it becomes clear that regex is insufficiently sophisticated to accomplish this task and also handle it at scale.   
