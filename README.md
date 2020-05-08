@@ -1,22 +1,22 @@
 # **DSA Final Project:** 
 
 ##                                               Abstract
-As primarily a JavaScript and Python developer, I want to be able to easily convert snippets of code written in Python to JavaScript and vice versa. This wil enables programmers to avoid rewriting boilerplate logic that has been implemented in Python or JavaScript when they are switching languages and also to make it easy to migrate codebases from Python to JavaScript and vice versa almost enirely automating the process. 
+As primarily a JavaScript and Python developer, I want to be able to easily convert snippets of code written in Python to JavaScript and vice versa. This will enable programmers to avoid rewriting boilerplate logic that has been implemented in Python or JavaScript when they are switching languages and also to make it easy to migrate codebases from Python to JavaScript and vice versa almost enirely automating the process. 
 
 ##                                       Problem Importance
-  Particularly in the context of web development, it is common to see both languages used together either entirely on the server-side(e.g multiple containers running with instances of node.js and Django/flask ) or the client-side typically written in Javascript and the server side in Python or any of its derivative web frameworks. Being able to convert between the two languages could potentially save programmers time spent on rewriting same program across the two languages. With the continuous evolution of new programming languages and sometimes cessation of support for older ones, programmers have to learn new languages, rewrite codebases in a newer language, and handle many other quirks that emanate from changing the language a program is written in. Solving this problem would promote convergence around how programming languages are used.
+  Particularly in the context of web development, it is common to see both languages used together either entirely on the server-side(e.g multiple containers running with instances of node.js and Django/flask ) or the client-side typically written in Javascript and the server side in Python or any of its derivative web frameworks. Being able to convert between the two languages could potentially save programmers time spent on rewriting same program across the two languages. With the continuous evolution of new programming languages and sometimes cessation of support for older ones, programmers have to learn new languages, rewrite codebases in a newer language, and handle many other quirks that emanate from changing the language a program is originally written in. Solving this problem would promote convergence around how programming languages are used.
 
 
 ##                                           Problem Background
 
-According to Wikipedia, there are over 700 programming languages with Javascript and Python being the two most popular. Javascript versatility in the web and python's versatility across multiple domains have made them a popular choice of language for programmers. There exists some similarities between both languages. Both JavaScript and Python are interpreted, high-level languages, and support multiple modern paradigms of programming like object-oriented and functional programming. Since 1995 when Sun Microsystems first championed the "Write once, run anywhere" philosophy, many other programming languages have evolved to allow the same source code to be compiled different target machines. software kits like google's flutter allow the same source to be used for android, iOS, Windows, Mac, Linux, Google Fuchsia, and the web. This philosophy is the main driver behind the quest to solve this problem, a sort of "Write once, translate, and use anywhere". 
+According to Wikipedia, there are over 700 programming languages with Javascript and Python being the two most popular. Javascript versatility in the web and python's versatility across multiple domains have made them a popular choice of language for programmers. There exists some similarities between both languages. Both JavaScript and Python are interpreted, high-level languages, and support multiple modern paradigms of programming like object-oriented and functional programming. Since 1995 when Sun Microsystems first championed the "Write once, run anywhere" philosophy, many other programming languages have evolved to allow the same source code to be compiled different target machines. software kits like google's flutter allow the same source to be used for android, iOS, Windows, Mac, Linux, Google Fuchsia, and the web. This philosophy is the main driver behind the quest to solve this problem, a sort of "Write Once, Translate, and Use Anywhere". 
 
 
 ##                                   Solution Requirement
 At the barest minimum, the solution to this problem should satisfy the following constraints:
 * Near accurate conversion from Python to JavaScript.
 * Handle syntactic edge cases like regular function declaration and arrow functions in JavaScript, regular functions and function expressions(lambda functions) in Python, etc
-* Parsing should be achieved in the worst-case scenario of *O(nlogn)* time. This is particularly important because we are dealing with an input(sourcecode string) of arbitrary size which might vary depending on the amount of source code we are parsing. 
+* Parsing should be achieved in the worst-case scenario of *O(nlogn)* time. This is particularly important because we expect to be dealing with an input(sourcecode string) of arbitrary size. The size might vary depending on the amount of source code the user is parsing. 
 * Parsing should be done in *O(n2)* space complexity. The rationale behind this is that since source code is fundamentally a text file, the input size is expected to be small, and in the case of large input size, space can be easily compensated for in comparison to time. 
 
 
@@ -47,7 +47,7 @@ for construct in source_code_list:
     output_code_list.append(construct)
 ```
 
-We could write some more custom logic in the conditionals here, but it already begins to become clear that logic is convoluted, and its almost impossible to account for all the edge cases. Seeing that replace text matching is bound to fail here, we then turn to a more powerful way of matching text - regular expressions. Regex is an excellent tool for working with complex strings. 
+We could write some more custom logic in the conditionals here, but it already begins to become clear that logic is convoluted, and its almost impossible to account for all the edge cases. Seeing that search text matching is bound to fail here, we then turn to a more powerful way of matching text - regular expressions. Regex is an excellent tool for working with complex strings. 
 ```
 <tag[^>]*>(.*?)</tag>
 ```
@@ -64,8 +64,10 @@ Looking back at the approach so far, we can still make some optimizations to how
   'while': 'while'
   '==': '===',
   'type': 'typeof',
-  '{}': ' '
-  
+  '{}': ' ',
+  '': 'var',
+  '': 'const',
+  '':'let'
 }
 ```
 When parsing the source code of the first language, in this case, Python. While searching, we simply check our map to see what a text translates as to. This is easily achieved in O(n) time, since searching for the equivalent of a construct takes O(1) time. While this has made it easy for to able to quickly access and translate from the sourcecode, it fails to address the main problem.  
@@ -75,12 +77,7 @@ When parsing the source code of the first language, in this case, Python. While 
 **Additional Insight from Approach:** Through this problem-solving process, another constraint that wasn't originally taken into consideration becomes obvious. The same piece of code might represent something else depending on the surrounding context. How then do we handle an expression, block of code in relation to its context? Search and replace so far has not been a good approach to solving this. 
 
 #### Limitations of search and replace:
-<p>
-<ul>
-  <li><strong>Handling Scope</strong></li>
-</ul>
-Say a we have two nested functions like this
-</p>
+**Handling Scope:** Say a we have two nested functions like this
 
 ```javascript
 function foo(){
@@ -93,7 +90,7 @@ function foo(){
 ```
 Search and replace blindly transverses the sourcecode without context and is bound to error. No doubt some clever conditioning can be done here to handle this but it not only increases the complexity but introduces newer problems. 
 
-### Encoding:
+## Encoding:
 What if we could somehow come up with a standard way to encode the source code in a way the makes it easier to parse and convert considering the difficulties we have experienced so far with the source code in its raw form. Ideally, this format should be independent of any of the two languages making it easy to parse data back and forth. Taking a cue from JSON(JavaScript Object Notation), when an application resource is exposed via an API and data is transmitted via JSON, any other applications irrespective of the programming language being used can consume the API and utilize its resources. 
 
 *At the core of this approach is a representation problem. How best do we best represent and model our data to enable us to transform it from one form to another while preserving the original information the data represents? What is the most accurate data structure that suits this task? Do existing data structures suits this task and satisfy the constraints? do we need to make modifications to enable existing data structures properly model our data ?*
@@ -148,7 +145,7 @@ Variable Declaration    Variable Declaration
 ```
 
 ### Final Solution: Abtract Syntax Trees ###
-Wikipedia defines abstract syntax trees (AST) as a tree representation of the abstract syntactic structure of source code written in a programming language. Each node of the tree denotes a construct occurring in the source code. Abstract Syntax trees are useful data structures for representing the abstract structure of source code irrespective of the language. All modern programming languages have a large similarities in terms of the code structure they express e.g variable declaration/assignment, conditionals, loops, logic branching, etc. Abstact syntax trees is a standadized way for appraoching how we represent sourcecode as a tree data structure. To generate the sourcecode -- original or converted, we simply apply the right kind of traversal on the abstract syntax tree visiting each node and analysing it. There are multiple conventions for ASTs in JavaScript(e.g esprima. estree,ascorn,etc) an accompanying parsers to process the AST. Python has an inbuilt module for woring with AST and JavaScript has a several libraries for parsing ASTs. A simple AST in Python would look like this.
+Wikipedia defines abstract syntax trees (AST) as a tree representation of the abstract syntactic structure of source code written in a programming language. Each node of the tree denotes a construct occurring in the source code. Abstract Syntax trees are useful data structures for representing the abstract structure of source code irrespective of the language. All modern programming languages have a large similarities in terms of the code structure they express e.g variable declaration/assignment, conditionals, loops, logic branching, etc. Abstact syntax trees is a standadized way for appraoching how we represent sourcecode as a tree data structure. To generate the sourcecode -- original or converted, we simply apply the right kind of traversal on the abstract syntax tree visiting each node and analysing it. There are multiple conventions for ASTs in JavaScript(e.g esprima. estree,ascorn,etc) an accompanying parsers to process the AST. Python has an inbuilt module for working with AST and JavaScript has a several libraries for parsing ASTs. A simple AST in Python would look like this.
 ```python
 import ast 
 sourcecode = "3 + 1 * y"
@@ -210,7 +207,7 @@ The equivalent AST for the same code in JavaScript using Esprima standards would
 
 ### Why ASTs? ###
 
-* Taking the constraint of near accurate conversion we How we handle accuracy? we can now use a set of predefined syntactic rules on how the AST should be processed and we decide what to do when we encounter certain kinds of node on numerous circumstances. Using the semi colon delimeter is optional in Javascript and the usage of this is entirely based on preference. AST allows us the sophiscation of defining how we approach the source code. Babel a JavaScript tool for transpiling and polyfilling sourcecode takes advantage of this. linters also take advantage of this allowing programmers to dictate sourcecode styling and conventions. 
+* Taking the constraint of near accurate conversion we How we handle accuracy? we can now use a set of predefined syntactic rules on how the AST should be processed and we decide what to do when we encounter certain kinds of node on numerous circumstances. Using the semi colon delimeter is optional in Javascript and the usage of this is entirely based on preference. AST allows us the sophiscation of defining how we approach the source code. Babel a JavaScript tool for transpiling and polyfilling sourcecode takes advantage of this. linters also take advantage of this allowing programmers to enforce code styling and conventions. 
 
     Take for example below
     
@@ -222,6 +219,7 @@ The equivalent AST for the same code in JavaScript using Esprima standards would
 * AST handles scoping and context limitations of search and replaces by storing meta-data while parsing the sourcecode allows context-specific decisions. This meta data can include the location of a contruct within the sourcecode, etc. 
 
 ### Taking Abstract Syntax Trees One Step Further
-Having figured out to accurately represent and convert sourcecode.There are many routes to achieve the goal this project  the most obvious/direct being to make the AST, make transform rules and convert the python tree to a JavaScript tree and vice versa. This is the approach used in the code for this project. However, the overall philisophy behind this project to promote convergence around program languages. 
+Having figured out to accurately represent and convert sourcecode.There are many routes to achieve the goal this project  the most obvious/direct being to make the AST, make transform rules and convert the python tree to a JavaScript tree and vice versa. This is the approach used in the code for this project. However, since the overall philisophy behind this project to promote convergence around program languages. This solution can be taken one step further.
+**Universal ASTs:** Currently ASTs are very language specific, as seen in the snippet above, AST for the same piece of code varies across both languages and in the case of JavaScript, the AST vaaries depending the parser engine used. 
 
 A modular approach to designing parser based on a plugin system. Programmers can simply 
