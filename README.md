@@ -222,6 +222,5 @@ The equivalent AST for the same code in JavaScript using Esprima standards would
 
 ### Taking Abstract Syntax Trees One Step Further
 Having figured out to accurately represent and convert sourcecode.There are many routes to achieve the goal this project  the most obvious/direct being to make the AST, make transform rules and convert the python tree to a JavaScript tree and vice versa. This is the approach used in the code for this project. However, since the overall philisophy behind this project to promote convergence around program languages. This solution can be taken one step further.
-**Universal ASTs:** Currently ASTs are very language specific, as seen in the snippet above, AST for the same piece of code varies across both languages and in the case of JavaScript, the AST vaaries depending the parser engine used. 
+**Universal ASTs:** Currently ASTs are very language specific, as seen in the snippet above, AST for the same piece of code varies across both languages and in the case of JavaScript, the AST varies depending the parser engine used. 
 
-A modular approach to designing parser based on a plugin system. Programmers can simply 
